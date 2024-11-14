@@ -1,0 +1,54 @@
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - TOKEN=${TOKEN}
+    networks:
+      - app-tier
+    depends_on:
+      redis:
+        condition: service_healthy
+      mariadb:
+        condition: service_healthy
+  redis:
+    image: redis:latest
+    container_name: redis_service
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    environment:
+      - REDIS_REPLICATION_MODE=standalone
+    command: ["redis-server", "--appendonly", "yes"]
+    networks:
+      - app-tier
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+  mariadb:
+    restart: unless-stopped
+    image: bitnami/mariadb:10.10
+    networks:
+      - app-tier
+    environment:
+      MARIADB_USER: ${VZ_DB_USER}
+      MARIADB_ROOT_PASSWORD: ${VZ_DB_ROOT_PASSWORD}
+      MARIADB_PASSWORD: ${VZ_DB_PASSWORD}
+      MARIADB_DATABASE: ${VZ_DB_DATABASE}
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: [ 'CMD', '/opt/bitnami/scripts/mariadb/healthcheck.sh' ]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+volumes:
+  redis_data:
+    driver: local
+
+networks:
+  app-tier:
