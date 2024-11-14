@@ -2,16 +2,14 @@ package org.vzbot.plugins
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.vzbot.io.EnvVariables
 import org.vzbot.io.env
 import org.vzbot.models.APITokens
+import org.vzbot.models.Printers
 import org.vzbot.models.SerialNumbers
 import org.vzbot.models.SerialTickets
 
@@ -28,6 +26,6 @@ fun Application.configureDatabases() {
     Database.connect(source)
 
     transaction {
-        SchemaUtils.createMissingTablesAndColumns(APITokens, SerialTickets, SerialNumbers)
+        SchemaUtils.createMissingTablesAndColumns(APITokens, SerialTickets, SerialNumbers, Printers)
     }
 }

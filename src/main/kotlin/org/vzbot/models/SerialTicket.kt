@@ -7,12 +7,13 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.statix.HasOne
 import org.statix.Model
 import org.statix.ModelIgnore
 
 object SerialTickets : IntIdTable() {
     val ownerID = long("ticket_owner_id")
-    val printer = varchar("printer", 16)
+    val printer = reference("printer", Printers.id)
     val description = text("description")
     val mediaURL = varchar("media_url", 255)
     val country = enumeration("country", Country::class).nullable()
@@ -45,9 +46,13 @@ class SerialTicket(id: EntityID<Int>): Entity<Int>(id) {
     @ModelIgnore
     var discordChannel by SerialTickets.discordChannel
 
-    var printer by SerialTickets.printer
-    var accepted by SerialTickets.accepted
-    var open by SerialTickets.open
-    var country by SerialTickets.country
+    @HasOne
+    var printer by Printer referencedOn SerialTickets.printer
 
+    var accepted by SerialTickets.accepted
+    @ModelIgnore
+    var open by SerialTickets.open
+
+    @ModelIgnore
+    var country by SerialTickets.country
 }

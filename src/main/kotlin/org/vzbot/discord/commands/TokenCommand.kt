@@ -9,19 +9,15 @@ import com.zellerfeld.zellerbotapi.discord.components.commands.annotations.DComm
 import com.zellerfeld.zellerbotapi.discord.components.commands.annotations.DSubCommand
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.vzbot.discord.restrictions.AdminRestriction
-import org.vzbot.discord.restrictions.TeamMemberRestriction
-import org.vzbot.io.buildPrettyEmbed
 import org.vzbot.io.infoEmbed
 import org.vzbot.io.prettyEmbed
 import org.vzbot.io.rawInfoEmbed
 import org.vzbot.models.APIToken
 import org.vzbot.models.SerialTicket
 import org.vzbot.models.SerialTickets
-import org.vzbot.models.generated.SerialTicketModelDTO
 import org.vzbot.models.generated.toModel
 import java.awt.Color
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 @DCommand("token", "manage api tokens for the rest api")
 class TokenCommand: DiscordCommand() {
