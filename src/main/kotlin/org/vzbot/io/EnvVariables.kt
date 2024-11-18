@@ -13,6 +13,10 @@ enum class EnvVariables(
     ADMIN_ROLE(EnvType.STRING),
     SERIAL_CATEGORY(EnvType.LONG),
     VZ_TEAM_ROLE(EnvType.LONG),
+    SERIAL_ANNOUNCEMENT_CHANNEL(EnvType.LONG),
+
+    SERIAL_BASE_PLATE_LOCATION(EnvType.STRING),
+    SERIAL_NUMBER_PLATES_LOCATION(EnvType.STRING),
 
     DB_USER(EnvType.STRING),
     DB_PASSWORD(EnvType.STRING, requiresNonEmpty = false),

@@ -5,9 +5,6 @@ import com.zellerfeld.zellerbotapi.util.Token
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
-import org.vzbot.io.BotLogger
-import org.vzbot.io.EnvVariables
-import org.vzbot.io.env
 import org.vzbot.plugins.*
 
 fun main() {

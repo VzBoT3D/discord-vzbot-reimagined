@@ -14,7 +14,7 @@ object BotLogger {
     }
 
     fun logError(info: String) {
-        infoChannel!!.sendMessageEmbeds(buildPrettyEmbed("Error", info, Color.RED))
+        infoChannel!!.sendMessageEmbeds(buildPrettyEmbed("Error", info, Color.RED)).queue()
     }
 
     fun logInfo(info: String) {

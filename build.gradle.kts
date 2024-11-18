@@ -59,10 +59,13 @@ dependencies {
 
     implementation("com.zellerfeld.development:ZellerBot-API:1.0-SNAPSHOT")
     implementation ("com.github.StaticFX:ktor-middleware:b02796db1b")
+    implementation("io.ktor:ktor-client-cio-jvm:3.0.1")
+    implementation("io.ktor:ktor-client-content-negotiation:3.0.1")
+    implementation("com.github.Carleslc.Simple-YAML:Simple-Yaml:1.8.4")
 
     testImplementation("io.ktor:ktor-server-test-host-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 
-    implementation("com.github.StaticFX.kotlin-exposed-relationships:annotations:1.0.0")
-    ksp("com.github.StaticFX.kotlin-exposed-relationships:processor:1.0.0")
+    implementation("com.github.StaticFX.kotlin-exposed-relationships:annotations:1.0.1")
+    ksp("com.github.StaticFX.kotlin-exposed-relationships:processor:1.0.1")
 }

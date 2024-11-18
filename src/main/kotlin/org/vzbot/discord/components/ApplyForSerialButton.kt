@@ -10,9 +10,11 @@ import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.interactions.components.ActionRow
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
 import net.dv8tion.jda.api.interactions.components.text.TextInput
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.vzbot.discord.util.userPrinterSelections
 import org.vzbot.io.EnvVariables
 import org.vzbot.io.buildPrettyEmbed
 import org.vzbot.io.env
@@ -25,10 +27,14 @@ import org.vzbot.models.generated.toModel
 import java.awt.Color
 
 @DCButton
-class ApplyForSerialButton: PermanentDiscordButton("vz_apply_serial", DiscordButton(label = "Apply for serial", emoji = Emoji.fromUnicode("U+2709"))) {
+class ApplyForSerialButton: PermanentDiscordButton("vz_apply_serial", DiscordButton(label = "Continue", emoji = Emoji.fromUnicode("U+27A1"), buttonStyle = ButtonStyle.PRIMARY)) {
     override fun execute(actionSender: ActionSender, hook: Message) {
-        val printers = transaction { Printer.all().map { it.toModel() } }
-        val printerInput = TextInput.create("printer", "Printer", TextInputStyle.SHORT).setPlaceholder(printers.joinToString("/") { it.name }).build()
+        val printer = userPrinterSelections[actionSender.member]
+        if (printer == null) {
+            actionSender.respondEmbed(buildPrettyEmbed("Error", "Your entered printer is not valid for applications currently", Color.RED), true)
+            return
+        }
+
         val descriptionInput = TextInput.create("description", "Description", TextInputStyle.PARAGRAPH).setPlaceholder("Please describe your machine").setMinLength(100).build()
         val countryInput = TextInput.create("country", "Country", TextInputStyle.SHORT).setRequired(false).setPlaceholder("Please enter a valid country code, or leave it empty").build()
         val videoInput = TextInput.create("media", "Media", TextInputStyle.PARAGRAPH).setRequired(true).setPlaceholder("Please enter a video linkt of your printer printing").build()
@@ -49,20 +55,10 @@ class ApplyForSerialButton: PermanentDiscordButton("vz_apply_serial", DiscordBut
         }
 
         val modal = DiscordModal("Apply for serial", mutableListOf(
-            ActionRow.of(printerInput),
             ActionRow.of(descriptionInput),
             ActionRow.of(countryInput),
             ActionRow.of(videoInput))) {
           modalSender, _, values ->
-            val printer = values["printer"]!!.asString
-
-            val resolvedPrinter = transaction { Printer.find { Printers.name eq printer }.firstOrNull() }
-
-            if (resolvedPrinter == null) {
-                modalSender.respondEmbed(buildPrettyEmbed("Error", "Your entered printer is not valid for applications currently", Color.RED), true)
-                return@DiscordModal
-            }
-
             val publicRole = ZellerBot.mainGuild?.publicRole ?: run {
                 actionSender.respondText("There was an error creating your ticket. Please inform the team", true)
                 return@DiscordModal
@@ -93,7 +89,7 @@ class ApplyForSerialButton: PermanentDiscordButton("vz_apply_serial", DiscordBut
             val ticket = transaction {
                 SerialTicket.new {
                     this.description = description
-                    this.printer = resolvedPrinter
+                    this.printer = printer
                     this.ownerID = modalSender.member.idLong
                     this.mediaURL = video
                     this.country  = resolvedCountry
@@ -103,11 +99,13 @@ class ApplyForSerialButton: PermanentDiscordButton("vz_apply_serial", DiscordBut
 
             val embed = prettyEmbed("Serial application from ${modalSender.member.effectiveName}", "", Color.ORANGE)
             embed.addField("Status", "Pending", false)
-            embed.addField("Printer", printer, false)
+            embed.addField("Printer", transaction { printer.name }, false)
             embed.addField("Description", description, false)
             embed.addField("Country", country.ifEmpty { "Not provided" }, false)
 
-            serialChannel.sendMessageEmbeds(embed.build()).addActionRow(AcceptSerialRequestButton(), DeclineSerialRequestButton()).queue()
+            serialChannel.sendMessageEmbeds(embed.build()).addActionRow(AcceptSerialRequestButton(), DeclineSerialRequestButton()).queue {
+                serialChannel.sendMessage(video).queue()
+            }
 
             modalSender.respondEmbed(buildPrettyEmbed("Application created", "We have created an application channel for you over here ${serialChannel.asMention}. As soon as we have looked into it, you will be notified!", Color.GREEN), true)
         }

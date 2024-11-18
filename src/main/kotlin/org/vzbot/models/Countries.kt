@@ -1,4 +1,10 @@
 package org.vzbot.models
+
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.request.*
+import kotlinx.serialization.Serializable
+
 /**
  *
  * @version 1.0
@@ -203,14 +209,23 @@ enum class Country(val code: String, val countryName: String) {
     ZAMBIA("ZM", "Zambia"),
     ZIMBABWE("ZW", "Zimbabwe");
 
+    suspend fun getLocation(client: HttpClient): CountryInfo? {
+        if (this == UNKNOWN) return null
+
+        val response = client.get("alpha/$code") {}
+        val info = response.body<List<CountryInfo>>()
+
+        return info.first()
+    }
+
     companion object {
-        fun hasCountry(country: String): Boolean {
+        private fun hasCountry(country: String): Boolean {
             if (country == "N/A") return false
-            return values().any { it.code.uppercase() == country.uppercase() } || values().any { it.countryName.uppercase() == country.uppercase() }
+            return entries.any { it.code.uppercase() == country.uppercase() } || entries.any { it.countryName.uppercase() == country.uppercase() }
         }
 
         fun getCountry(country: String): Country {
-            return values().firstOrNull { it.code.uppercase() == country.uppercase() } ?: values().firstOrNull { it.countryName.uppercase() == country.uppercase() } ?: valueOf(country)
+            return entries.firstOrNull { it.code.uppercase() == country.uppercase() } ?: entries.firstOrNull { it.countryName.uppercase() == country.uppercase() } ?: Country.UNKNOWN
         }
 
         override fun equals(other: Any?): Boolean {
@@ -219,3 +234,9 @@ enum class Country(val code: String, val countryName: String) {
         }
     }
 }
+
+@Serializable
+data class CountryInfo(val capital: List<String>? = null, val latlng: List<Double>? = null, val capitalInfo: CapitalInfo? = null)
+
+@Serializable
+data class CapitalInfo(val latlng: List<Double>? = null)

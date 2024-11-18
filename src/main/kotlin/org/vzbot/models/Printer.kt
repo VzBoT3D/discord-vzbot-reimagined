@@ -7,7 +7,7 @@ import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.statix.Model
 
-object Printers: IntIdTable() {
+object Printers: IntIdTable("printers") {
     val name = varchar("printer_name", 255).uniqueIndex()
 }
 

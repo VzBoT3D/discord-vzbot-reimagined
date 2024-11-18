@@ -11,7 +11,7 @@ import org.statix.HasOne
 import org.statix.Model
 import org.statix.ModelIgnore
 
-object SerialTickets : IntIdTable() {
+object SerialTickets : IntIdTable("serial_tickets") {
     val ownerID = long("ticket_owner_id")
     val printer = reference("printer", Printers.id)
     val description = text("description")
