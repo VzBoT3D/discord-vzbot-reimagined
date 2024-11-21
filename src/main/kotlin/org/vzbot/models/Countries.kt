@@ -4,6 +4,7 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import kotlinx.serialization.Serializable
+import kotlin.random.Random
 
 /**
  *
@@ -209,13 +210,75 @@ enum class Country(val code: String, val countryName: String) {
     ZAMBIA("ZM", "Zambia"),
     ZIMBABWE("ZW", "Zimbabwe");
 
-    suspend fun getLocation(client: HttpClient): CountryInfo? {
+    private val cachedCountries = mutableMapOf<Country, List<List<Geometry>>>()
+
+    suspend fun getLocation(client: HttpClient): List<List<Geometry>>? {
         if (this == UNKNOWN) return null
 
-        val response = client.get("alpha/$code") {}
-        val info = response.body<List<CountryInfo>>()
+        if (cachedCountries.containsKey(this)) {
+            return cachedCountries[this]
+        }
 
-        return info.first()
+
+        val overpassUrl = "http://overpass-api.de/api/interpreter"
+        val query = """
+        [out:json];
+        relation
+          ["ISO3166-1"="$code"]
+          [admin_level="2"]
+          [type=boundary]
+          [boundary=administrative];
+        (._;>;);
+        way(r);
+        out geom;
+        """.trimIndent()
+
+        val response = client.get(overpassUrl) {
+            parameter("data", query)
+        }
+
+        val geoJSON = response.body<OverpassResponse>()
+        val elements = geoJSON.elements
+            .filter { it.type == "way" && it.geometry != null }
+            .mapNotNull { it.geometry }
+
+        cachedCountries[this] = elements
+        return elements
+    }
+
+    fun randomPointInPolygon(polygon: List<Geometry>): Pair<Double, Double>? {
+        val lats = polygon.map { it.lat }
+        val lons = polygon.map { it.lon }
+
+        val minLat = lats.min()
+        val maxLat = lats.max()
+        val minLon = lons.min()
+        val maxLon = lons.max()
+
+        repeat(10000) { // Attempt multiple times
+            val randomLat = Random.nextDouble(minLat, maxLat)
+            val randomLon = Random.nextDouble(minLon, maxLon)
+
+            if (pointInPolygon(randomLat, randomLon, polygon)) {
+                return randomLat to randomLon
+            }
+        }
+        return null
+    }
+
+    private fun pointInPolygon(lat: Double, lon: Double, polygon: List<Geometry>): Boolean {
+        var inside = false
+        val n = polygon.size
+        for (i in 0 until n) {
+            val xi = polygon[i].lon
+            val yi = polygon[i].lat
+            val xj = polygon[(i + 1) % n].lon
+            val yj = polygon[(i + 1) % n].lat
+            val intersect = (yi > lat) != (yj > lat) &&
+                    (lon < (xj - xi) * (lat - yi) / (yj - yi) + xi)
+            if (intersect) inside = !inside
+        }
+        return inside
     }
 
     companion object {
@@ -236,7 +299,20 @@ enum class Country(val code: String, val countryName: String) {
 }
 
 @Serializable
-data class CountryInfo(val capital: List<String>? = null, val latlng: List<Double>? = null, val capitalInfo: CapitalInfo? = null)
+data class OverpassResponse(
+    val elements: List<Element>
+)
 
 @Serializable
-data class CapitalInfo(val latlng: List<Double>? = null)
+data class Element(
+    val type: String,
+    val id: Long,
+    val geometry: List<Geometry>? = null,
+    val tags: Map<String, String>? = null // For filtering by tags like `admin_level` and `boundary`
+)
+
+@Serializable
+data class Geometry(
+    val lat: Double,
+    val lon: Double
+)

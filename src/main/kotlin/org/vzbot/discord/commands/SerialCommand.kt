@@ -7,6 +7,7 @@ import com.zellerfeld.zellerbotapi.discord.components.commands.actionsenders.Act
 import com.zellerfeld.zellerbotapi.discord.components.commands.annotations.DCommand
 import com.zellerfeld.zellerbotapi.discord.components.commands.annotations.DCommandOption
 import com.zellerfeld.zellerbotapi.discord.components.commands.annotations.DSubCommand
+import kotlinx.coroutines.*
 import net.dv8tion.jda.api.entities.Message.Attachment
 import net.dv8tion.jda.api.interactions.components.ActionRow
 import net.dv8tion.jda.api.utils.FileUpload
@@ -18,6 +19,7 @@ import org.vzbot.discord.restrictions.TeamMemberRestriction
 import org.vzbot.io.buildPrettyEmbed
 import org.vzbot.models.*
 import org.vzbot.models.generated.toModel
+import org.vzbot.plugins.geoClient
 import java.awt.Color
 import java.nio.file.Files
 import java.time.LocalDateTime
@@ -43,6 +45,7 @@ class SerialCommand: DiscordCommand() {
         @DCommandOption("input .yml file")
         lateinit var input: Attachment
 
+        @OptIn(DelicateCoroutinesApi::class)
         @Restricted(AdminRestriction::class, "mustBeAdmin")
         override fun execute(actionSender: ActionSender) {
             val hook = actionSender.respondLater(false)
@@ -67,9 +70,14 @@ class SerialCommand: DiscordCommand() {
                 val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
                 val date = LocalDateTime.parse(section.getString("date").substring(0, 19), formatter)
 
-                val printer = transaction { org.vzbot.models.Printer.find { Printers.name eq section.getString("printer") }.firstOrNull() }
+                var printer = transaction { org.vzbot.models.Printer.find { Printers.name eq section.getString("printer") }.firstOrNull() }
 
-                transaction {
+                if (printer == null) {
+                    log.appendLine("Selected random printer for serial: $id")
+                    printer = transaction { org.vzbot.models.Printer.all().toList().random() }
+                }
+
+                val serial = transaction {
                     SerialNumber.new {
                         this.description = description
                         this.serialID = id
@@ -80,6 +88,40 @@ class SerialCommand: DiscordCommand() {
                         this.printer = printer
                     }
                 }
+
+                runBlocking {
+                    if (country != Country.UNKNOWN) {
+                        log.appendLine("Importing country for serial")
+
+                        val geometry = country.getLocation(geoClient) ?: run {
+                            log.appendLine("Failed to fetch geometry for country ${country.countryName} for serial $id")
+                            return@runBlocking
+                        }
+
+                        var coordinates: Pair<Double, Double>? = null
+
+                        for (geometries in geometry) {
+                            coordinates = country.randomPointInPolygon(geometry.random())
+
+                            if (coordinates != null) break
+                        }
+
+                        if (coordinates == null) {
+                            log.appendLine("Failed to load coordinates for country ${country.countryName} for serial $id")
+                            return@runBlocking
+                        }
+
+                        transaction {
+                            serial.latitude = coordinates.first
+                            serial.longitude = coordinates.second
+                        }
+
+                        log.appendLine("Found lat lng: ${coordinates.first} / ${coordinates.second}")
+                    } else {
+                        log.appendLine("Serial $id has no country")
+                    }
+                }
+
                 created++
                 log.appendLine("Created serial $id in database.")
             }
