@@ -8,10 +8,7 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.vzbot.io.EnvVariables
 import org.vzbot.io.env
-import org.vzbot.models.APITokens
-import org.vzbot.models.Printers
-import org.vzbot.models.SerialNumbers
-import org.vzbot.models.SerialTickets
+import org.vzbot.models.*
 
 fun Application.configureDatabases() {
     val config = HikariConfig().apply {
@@ -26,6 +23,11 @@ fun Application.configureDatabases() {
     Database.connect(source)
 
     transaction {
-        SchemaUtils.createMissingTablesAndColumns(APITokens, SerialTickets, SerialNumbers, Printers)
+        SchemaUtils.createMissingTablesAndColumns(
+            APITokens,
+            SerialTickets,
+            SerialNumbers,
+            Printers,
+            PrinterProfiles)
     }
 }

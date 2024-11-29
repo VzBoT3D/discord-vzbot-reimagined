@@ -256,8 +256,9 @@ enum class Country(val code: String, val countryName: String) {
         val maxLon = lons.max()
 
         repeat(10000) { // Attempt multiple times
-            val randomLat = Random.nextDouble(minLat, maxLat)
-            val randomLon = Random.nextDouble(minLon, maxLon)
+
+            val randomLat = if(minLat == maxLat) minLat else Random.nextDouble(minLat, maxLat)
+            val randomLon = if(minLon == maxLon) minLon else Random.nextDouble(minLon, maxLon)
 
             if (pointInPolygon(randomLat, randomLon, polygon)) {
                 return randomLat to randomLon

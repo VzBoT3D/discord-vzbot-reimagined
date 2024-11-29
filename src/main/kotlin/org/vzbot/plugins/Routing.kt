@@ -9,15 +9,15 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.encodeToJsonElement
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.vzbot.models.Country
-import org.vzbot.models.SerialNumber
-import org.vzbot.models.SerialNumbers
+import org.vzbot.models.*
 import org.vzbot.models.generated.toModel
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -68,6 +68,25 @@ fun Application.configureRouting() {
             println(latLng)
 
             call.respond(Json.encodeToJsonElement(latLng))
+        }
+
+        get("/printers/stats") {
+
+            val printers = transaction { Printer.all().map { it.toModel() } }
+            val printerMap = mutableMapOf<String, Long>()
+
+
+            for (printer in printers) {
+                val dbPrinter = transaction { Printer.find { Printers.name eq printer.name }.first() }
+                printerMap[printer.name] = transaction { SerialNumber.count(SerialNumbers.printer eq dbPrinter.id) }
+            }
+
+            call.respond(printerMap)
+        }
+
+        get("/printers/profiles") {
+            val profiles = transaction { PrinterProfile.all().map { it.toModel() } }
+            call.respond(profiles)
         }
     }
 }
