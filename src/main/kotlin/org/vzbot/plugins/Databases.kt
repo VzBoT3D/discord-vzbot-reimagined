@@ -28,6 +28,9 @@ fun Application.configureDatabases() {
             SerialTickets,
             SerialNumbers,
             Printers,
-            PrinterProfiles)
+            PrinterProfiles,
+            BlogAuthors,
+            BlogPosts,
+        )
     }
 }

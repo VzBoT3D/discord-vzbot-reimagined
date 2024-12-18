@@ -34,6 +34,12 @@ class SerialCommand: DiscordCommand() {
     class Panel(): DiscordSubCommand() {
         @Restricted(AdminRestriction::class, "mustBeAdmin")
         override fun execute(actionSender: ActionSender) {
+
+            if (transaction { Printer.all().empty() }) {
+                actionSender.respondEmbed(buildPrettyEmbed("Info", "Please at least one printer before generating the panel", Color.ORANGE))
+                return
+            }
+
             actionSender.textChannel.sendEmbed(buildPrettyEmbed("VzBoT Serial Program", "Click the button below to apply for a serial id!", Color.RED), ActionRow.of(PrinterSelection()))
             actionSender.respondText("The panel has been created", true)
         }

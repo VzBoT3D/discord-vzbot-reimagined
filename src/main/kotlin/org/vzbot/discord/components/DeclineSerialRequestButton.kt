@@ -13,21 +13,16 @@ import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.vzbot.discord.commands.fetchSerialTicket
 import org.vzbot.discord.restrictions.TeamMemberRestriction
+import org.vzbot.discord.restrictions.TicketRestrictions
 import org.vzbot.io.buildPrettyEmbed
 import java.awt.Color
 
 @DCButton
 class DeclineSerialRequestButton: PermanentDiscordButton("vz_decline_serial", DiscordButton(label = "Decline", buttonStyle = ButtonStyle.DANGER, emoji = Emoji.fromUnicode("U+1F44E"))) {
     @Restricted(TeamMemberRestriction::class, "mustBeInTeam")
+    @Restricted(TicketRestrictions::class, "validTicket")
     override fun execute(actionSender: ActionSender, hook: Message) {
-        actionSender.respondText("Not implemented", true)
-
-        val ticket = actionSender.fetchSerialTicket()
-
-        if (ticket == null) {
-            actionSender.respondEmbed(buildPrettyEmbed("Error", "There was an error fetching the ticket for this channel", Color.RED), true)
-            return
-        }
+        val ticket = actionSender.fetchSerialTicket()!!
 
         if (transaction { !ticket.open }) {
             actionSender.respondEmbed(buildPrettyEmbed("Error", "This ticket has already been reviewed!", Color.RED), true)
