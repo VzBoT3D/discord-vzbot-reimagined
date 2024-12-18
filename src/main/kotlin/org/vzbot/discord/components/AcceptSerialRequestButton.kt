@@ -36,7 +36,7 @@ class AcceptSerialRequestButton: PermanentDiscordButton("vz_accept_serial", Disc
             return
         }
 
-        val announcementChannel = ZellerBot.getTextChannel(env[EnvVariables.SERIAL_ANNOUNCEMENT_CHANNEL].toLong())
+        val announcementChannel = ZellerBot.getTextChannel(env[EnvVariables.VZ_SERIAL_ANNOUNCEMENT_CHANNEL].toLong())
 
         if (announcementChannel == null) {
             actionSender.respondEmbed(buildPrettyEmbed("Error", "There was an error fetching the announcement channel. Please report this to devin.", Color.RED), true)
@@ -84,8 +84,8 @@ class AcceptSerialRequestButton: PermanentDiscordButton("vz_accept_serial", Disc
                 announcementChannel.sendMessage(transaction { ticket.mediaURL }).queue()
             }
 
-            val serialBaseSTL = File(env[EnvVariables.SERIAL_BASE_PLATE_LOCATION], "plate.stl")
-            val serialNumberSTL = File(env[EnvVariables.SERIAL_NUMBER_PLATES_LOCATION], "${serialID}.stl")
+            val serialBaseSTL = File(env[EnvVariables.VZ_SERIAL_BASE_PLATE_LOCATION], "plate.stl")
+            val serialNumberSTL = File(env[EnvVariables.VZ_SERIAL_NUMBER_PLATES_LOCATION], "${serialID}.stl")
 
             if (serialBaseSTL.exists() && serialNumberSTL.exists()) {
                 channel.channel.sendFiles(FileUpload.fromData(serialNumberSTL), FileUpload.fromData(serialBaseSTL)).queue()

@@ -1,0 +1,25 @@
+version: '3'
+
+tasks:
+  start-prod:
+    desc: "Start the Docker Compose production environment"
+    cmds:
+      - docker compose -f docker-compose.yml up -d
+
+  start-dev:
+    desc: "Start the Docker Compose development environment"
+    cmds:
+      - docker compose -f docker-compose.dev.yml up -d
+
+  dev:
+    desc: "Build the project with Gradle and boot the Docker Compose dev environment"
+    cmds:
+      - echo "Building the project using Gradle..."
+      - ./gradlew build
+      - echo "Starting Docker Compose with development configuration..."
+      - docker compose -f docker-compose.dev.yml up -d
+
+  stop:
+    desc: "Stop all Docker Compose services"
+    cmds:
+      - docker compose down

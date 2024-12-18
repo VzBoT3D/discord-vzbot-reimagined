@@ -12,9 +12,9 @@ import org.vzbot.models.*
 
 fun Application.configureDatabases() {
     val config = HikariConfig().apply {
-        username = env[EnvVariables.DB_USER]
-        password = env[EnvVariables.DB_PASSWORD]
-        jdbcUrl = "jdbc:mariadb://${env[EnvVariables.DB_HOST]}:${env[EnvVariables.DB_PORT]}/${env[EnvVariables.DB_DATABASE]}"
+        username = env[EnvVariables.VZ_DB_USER]
+        password = env[EnvVariables.VZ_DB_PASSWORD]
+        jdbcUrl = "jdbc:mariadb://${env[EnvVariables.VZ_DB_HOST]}:${env[EnvVariables.VZ_DB_PORT]}/${env[EnvVariables.VZ_DB_DATABASE]}"
         driverClassName = "org.mariadb.jdbc.Driver"
     }
 

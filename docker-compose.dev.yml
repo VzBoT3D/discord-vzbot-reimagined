@@ -1,15 +1,4 @@
 services:
-  bot:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    env_file:
-      - .env
-    networks:
-      - app-tier
-    depends_on:
-      mariadb:
-        condition: service_healthy
   mariadb:
     restart: unless-stopped
     image: bitnami/mariadb:10.10

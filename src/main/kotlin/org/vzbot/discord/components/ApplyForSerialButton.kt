@@ -20,10 +20,7 @@ import org.vzbot.io.buildPrettyEmbed
 import org.vzbot.io.env
 import org.vzbot.io.prettyEmbed
 import org.vzbot.models.Country
-import org.vzbot.models.Printer
-import org.vzbot.models.Printers
 import org.vzbot.models.SerialTicket
-import org.vzbot.models.generated.toModel
 import java.awt.Color
 
 @DCButton
@@ -44,7 +41,7 @@ class ApplyForSerialButton: PermanentDiscordButton("vz_apply_serial", DiscordBut
             return
         }
 
-        val serialCategory = ZellerBot.bot?.getCategoryById(env[EnvVariables.SERIAL_CATEGORY]) ?: run {
+        val serialCategory = ZellerBot.bot?.getCategoryById(env[EnvVariables.VZ_SERIAL_CATEGORY]) ?: run {
             actionSender.respondText("There was an error creating your ticket. Please inform the team", true)
             return
         }

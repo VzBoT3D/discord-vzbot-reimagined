@@ -9,7 +9,7 @@ import org.vzbot.io.EnvVariables
 import org.vzbot.io.env
 
 fun configureBot() {
-    val token = env[EnvVariables.TOKEN]
+    val token = env[EnvVariables.VZ_TOKEN]
     ZellerBot.registerApplication(App())
 
     ZellerBot.onReady {

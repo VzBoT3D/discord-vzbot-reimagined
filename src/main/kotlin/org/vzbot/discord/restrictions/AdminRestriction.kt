@@ -19,7 +19,7 @@ class AdminRestriction {
 }
 
 fun Member.isAdmin(): Boolean {
-    val adminRole = ZellerBot.getRole(env[EnvVariables.ADMIN_ROLE])
+    val adminRole = ZellerBot.getRole(env[EnvVariables.VZ_ADMIN_ROLE])
     return adminRole in roles
 }
 

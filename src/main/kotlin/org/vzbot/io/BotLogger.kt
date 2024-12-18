@@ -5,7 +5,7 @@ import java.awt.Color
 
 object BotLogger {
 
-    val infoChannel = ZellerBot.getTextChannel(env[EnvVariables.LOG_CHANNEL].toLong())
+    val infoChannel = ZellerBot.getTextChannel(env[EnvVariables.VZ_LOG_CHANNEL].toLong())
 
     init {
         if (infoChannel == null) {
