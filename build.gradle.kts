@@ -66,6 +66,6 @@ dependencies {
     testImplementation("io.ktor:ktor-server-test-host-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 
-    implementation("com.github.StaticFX.kotlin-exposed-relationships:annotations:1.0.2")
-    ksp("com.github.StaticFX.kotlin-exposed-relationships:processor:1.0.2")
+    implementation("com.github.StaticFX.kotlin-exposed-relationships:annotations:1.0.4")
+    ksp("com.github.StaticFX.kotlin-exposed-relationships:processor:1.0.4")
 }
