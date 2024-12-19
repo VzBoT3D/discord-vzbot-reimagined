@@ -12,6 +12,7 @@ import org.statix.Model
 object BlogPosts: IntIdTable("blog_posts") {
 
     val author = reference("blog_author_id", BlogAuthors.id)
+    val title = varchar("title", 256)
     val content = mediumText("blog_content")
     val public = bool("blog_is_public")
     val createdAt = datetime("created_at").defaultExpression(CurrentDateTime)
@@ -25,6 +26,7 @@ class BlogPost(id: EntityID<Int>): Entity<Int>(id) {
     @BelongsTo
     var author by BlogAuthor referencedOn BlogPosts.author
 
+    var title by BlogPosts.title
     var content by BlogPosts.content
     var public by BlogPosts.public
     val createdAt by BlogPosts.createdAt

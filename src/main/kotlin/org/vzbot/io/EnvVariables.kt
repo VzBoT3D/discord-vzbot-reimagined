@@ -18,6 +18,8 @@ enum class EnvVariables(
     VZ_SERIAL_BASE_PLATE_LOCATION(EnvType.STRING),
     VZ_SERIAL_NUMBER_PLATES_LOCATION(EnvType.STRING),
 
+    VZ_WEBSITE_URL(EnvType.STRING),
+
     VZ_DB_USER(EnvType.STRING),
     VZ_DB_PASSWORD(EnvType.STRING, requiresNonEmpty = true),
     VZ_DB_HOST(EnvType.STRING),

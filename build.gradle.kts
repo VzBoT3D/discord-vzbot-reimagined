@@ -57,7 +57,7 @@ dependencies {
     implementation("org.mariadb.jdbc:mariadb-java-client:3.3.3")
     implementation("ch.qos.logback:logback-classic:$logback_version")
 
-    implementation("com.zellerfeld.development:ZellerBot-API:1.0-SNAPSHOT")
+    implementation("com.zellerfeld.development:ZellerBot-API:1.1")
     implementation ("com.github.StaticFX:ktor-middleware:b02796db1b")
     implementation("io.ktor:ktor-client-cio-jvm:3.0.1")
     implementation("io.ktor:ktor-client-content-negotiation:3.0.1")
