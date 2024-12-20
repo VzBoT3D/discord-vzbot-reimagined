@@ -4,6 +4,7 @@ import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.runBlocking
+import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.vzbot.models.BlogAuthor
 import org.vzbot.models.BlogPost
@@ -16,6 +17,12 @@ fun Route.blogs() {
         runBlocking { blogs.forEach { it.with { author() } } }
 
         call.respond(blogs)
+    }
+
+    get("/blogs/latest") {
+        val latestBlog = transaction { BlogPost.find { BlogPosts.public eq true }.orderBy(BlogPosts.createdAt to SortOrder.DESC).first().toModel() }
+        runBlocking { latestBlog.with { author() } }
+        call.respond(latestBlog)
     }
 
     get("/blogs/{id}") {

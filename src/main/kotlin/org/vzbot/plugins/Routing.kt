@@ -19,10 +19,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.vzbot.models.*
 import org.vzbot.models.generated.toModel
-import org.vzbot.plugins.routing.blogs
-import org.vzbot.plugins.routing.default
-import org.vzbot.plugins.routing.printers
-import org.vzbot.plugins.routing.serials
+import org.vzbot.plugins.routing.*
 import java.nio.file.Files
 import java.nio.file.Paths
 
@@ -47,5 +44,6 @@ fun Application.configureRouting() {
         serials()
         printers()
         blogs()
+        authors()
     }
 }
