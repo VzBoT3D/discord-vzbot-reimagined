@@ -1,6 +1,11 @@
 version: '3'
 
 tasks:
+  docker-image:
+    desc: Builds the docker image and tags it
+    cmds:
+      - gradle clean build
+      - docker buildx build --platform linux/amd64,linux/arm64 -t devinfritz/vzbot-discordbot:latest --push .
   start-prod:
     desc: "Start the Docker Compose production environment"
     cmds:

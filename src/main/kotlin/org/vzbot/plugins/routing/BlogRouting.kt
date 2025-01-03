@@ -13,7 +13,7 @@ import org.vzbot.models.generated.toModel
 
 fun Route.blogs() {
     get("/blogs") {
-        val blogs = transaction { BlogPost.all().map { it.toModel() } }
+        val blogs = transaction { BlogPost.all().orderBy(BlogPosts.createdAt to SortOrder.DESC).map { it.toModel() } }
         runBlocking { blogs.forEach { it.with { author() } } }
 
         call.respond(blogs)

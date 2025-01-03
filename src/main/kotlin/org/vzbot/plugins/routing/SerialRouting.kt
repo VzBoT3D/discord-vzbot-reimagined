@@ -35,8 +35,6 @@ fun Route.serials() {
         val location = serial.country!!.getLocation(geoClient) ?: return@get call.respondText("Country not found", status = HttpStatusCode.NotFound)
         val latLng = serial.country!!.randomPointInPolygon(location.random())
 
-        println(latLng)
-
         call.respond(Json.encodeToJsonElement(latLng))
     }
 }

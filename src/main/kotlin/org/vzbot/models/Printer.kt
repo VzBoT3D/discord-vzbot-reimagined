@@ -5,6 +5,7 @@ import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.statix.HasOne
 import org.statix.Model
 
 object Printers: IntIdTable("printers") {
@@ -20,4 +21,7 @@ class Printer(id: EntityID<Int>): Entity<Int>(id) {
     }
 
     var name by Printers.name
+
+    @HasOne
+    val profile by PrinterProfile referrersOn PrinterProfiles.printer
 }

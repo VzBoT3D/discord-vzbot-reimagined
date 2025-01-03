@@ -5,6 +5,7 @@ import com.zellerfeld.zellerbotapi.util.Token
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
+import org.vzbot.io.TeamLoader
 import org.vzbot.plugins.*
 
 fun main() {

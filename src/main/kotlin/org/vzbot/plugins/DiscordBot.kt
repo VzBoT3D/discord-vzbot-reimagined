@@ -6,6 +6,7 @@ import com.zellerfeld.zellerbotapi.util.scheduling.ExceptionHandler
 import org.vzbot.discord.App
 import org.vzbot.io.BotLogger
 import org.vzbot.io.EnvVariables
+import org.vzbot.io.TeamLoader
 import org.vzbot.io.env
 
 fun configureBot() {
@@ -14,6 +15,7 @@ fun configureBot() {
 
     ZellerBot.onReady {
         BotLogger.logInfo("Bot is online!")
+        TeamLoader.startScheduler()
     }
 
     ExceptionHandler.onException { t, e ->

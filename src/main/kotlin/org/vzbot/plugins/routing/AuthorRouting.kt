@@ -4,7 +4,6 @@ import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.runBlocking
-import org.jetbrains.exposed.dao.with
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.vzbot.models.BlogAuthor
 import org.vzbot.models.generated.toModel

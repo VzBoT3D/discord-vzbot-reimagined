@@ -45,5 +45,6 @@ fun Application.configureRouting() {
         printers()
         blogs()
         authors()
+        teamRouting()
     }
 }

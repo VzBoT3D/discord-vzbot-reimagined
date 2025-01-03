@@ -1,6 +1,7 @@
 package org.vzbot.discord.commands
 
 import com.zellerfeld.zellerbotapi.annotations.Restricted
+import com.zellerfeld.zellerbotapi.discord.components.DiscordModal
 import com.zellerfeld.zellerbotapi.discord.components.commands.DiscordCommand
 import com.zellerfeld.zellerbotapi.discord.components.commands.DiscordSubCommand
 import com.zellerfeld.zellerbotapi.discord.components.commands.actionsenders.ActionSender
@@ -11,12 +12,14 @@ import kotlinx.coroutines.*
 import net.dv8tion.jda.api.entities.Message.Attachment
 import net.dv8tion.jda.api.interactions.components.ActionRow
 import net.dv8tion.jda.api.utils.FileUpload
+import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.simpleyaml.configuration.file.YamlConfiguration
 import org.vzbot.discord.components.PrinterSelection
 import org.vzbot.discord.restrictions.AdminRestriction
 import org.vzbot.discord.restrictions.TeamMemberRestriction
 import org.vzbot.io.buildPrettyEmbed
+import org.vzbot.io.respondSuccess
 import org.vzbot.models.*
 import org.vzbot.models.generated.toModel
 import org.vzbot.plugins.geoClient
@@ -51,7 +54,6 @@ class SerialCommand: DiscordCommand() {
         @DCommandOption("input .yml file")
         lateinit var input: Attachment
 
-        @OptIn(DelicateCoroutinesApi::class)
         @Restricted(AdminRestriction::class, "mustBeAdmin")
         override fun execute(actionSender: ActionSender) {
             val hook = actionSender.respondLater(false)
@@ -76,12 +78,7 @@ class SerialCommand: DiscordCommand() {
                 val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
                 val date = LocalDateTime.parse(section.getString("date").substring(0, 19), formatter)
 
-                var printer = transaction { org.vzbot.models.Printer.find { Printers.name eq section.getString("printer") }.firstOrNull() }
-
-                if (printer == null) {
-                    log.appendLine("Selected random printer for serial: $id")
-                    printer = transaction { org.vzbot.models.Printer.all().toList().random() }
-                }
+                val printer = transaction { Printer.find { Printers.name eq section.getString("printer") }.firstOrNull() }
 
                 val serial = transaction {
                     SerialNumber.new {
@@ -138,6 +135,22 @@ class SerialCommand: DiscordCommand() {
             logFile.writeText(log.toString())
 
             hook.editOriginal("The import has finished").setFiles(FileUpload.fromData(logFile)).queue()
+        }
+    }
+
+    @DSubCommand("reset serial data")
+    class Reset: DiscordSubCommand() {
+
+        @Restricted(TeamMemberRestriction::class, "mustBeInTeam")
+        override fun execute(actionSender: ActionSender) {
+            val modal = DiscordModal("Confirm deletion", mutableListOf()) { sender, _, _ ->
+                transaction {
+                    SerialNumbers.deleteAll()
+                }
+                sender.respondSuccess("Deleted all serial information.")
+            }
+
+            actionSender.respondModal(modal)
         }
     }
 

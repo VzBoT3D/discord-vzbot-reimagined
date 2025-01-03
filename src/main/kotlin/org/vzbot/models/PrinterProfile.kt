@@ -4,6 +4,8 @@ import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IntIdTable
+import org.statix.BelongsTo
+import org.statix.HasMany
 import org.statix.Model
 
 object PrinterProfiles: IntIdTable("printer_profiles") {
@@ -22,5 +24,10 @@ class PrinterProfile(id: EntityID<Int>): Entity<Int>(id) {
     var description by PrinterProfiles.description
     var kitURL by PrinterProfiles.kitURL
     var learnMoreURL by PrinterProfiles.learnMoreURL
+
+    @BelongsTo
     var printer by Printer referencedOn PrinterProfiles.printer
+
+    @HasMany
+    val medias by PrinterMedia referrersOn PrinterMedias.printerProfile
 }

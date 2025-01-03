@@ -48,7 +48,7 @@ fun Member.createAuthor(): BlogAuthor {
         BlogAuthor.new {
             this.discordID = idLong
             this.name = effectiveName
-            this.profilePicture = user.avatarUrl ?: ""
+            this.profilePicture = user.avatarUrl ?: "https://github.com/VzBoT3D/VzBoT-Vz330/blob/master/Gallery/VzLoveAlt.png?raw=true"
             this.description = "VzBot Author"
         }
     }

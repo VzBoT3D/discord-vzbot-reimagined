@@ -31,6 +31,8 @@ fun Application.configureDatabases() {
             PrinterProfiles,
             BlogAuthors,
             BlogPosts,
+            PrinterProfiles,
+            PrinterMedias
         )
     }
 }

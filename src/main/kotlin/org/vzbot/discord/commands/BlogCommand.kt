@@ -76,7 +76,7 @@ class BlogCommand: DiscordCommand() {
 
             val id = transaction { blogPost.id.value }
 
-            actionSender.respondEmbed(buildPrettyEmbed("Created", "You have created the blog post with the title $blogTitle and the id $id. Use /blog view <id> to view it or open: ${env[EnvVariables.VZ_WEBSITE_URL]}/blog/$id", Color.GREEN), true)
+            actionSender.respondEmbed(buildPrettyEmbed("Created", "You have created the blog post with the title $blogTitle and the id $id. Use /blog view <id> to view it or open: ${env[EnvVariables.VZ_WEBSITE_URL]}blog/$id", Color.GREEN), true)
         }
     }
 

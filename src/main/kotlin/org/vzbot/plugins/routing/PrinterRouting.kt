@@ -1,7 +1,9 @@
 package org.vzbot.plugins.routing
 
+import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.vzbot.models.*
@@ -22,8 +24,32 @@ fun Route.printers() {
         call.respond(printerMap)
     }
 
+    get("/printer/{name}") {
+        val printerName = call.request.pathVariables["name"] ?: return@get call.respond(HttpStatusCode.BadRequest)
+        val printer = transaction { Printer.all().firstOrNull { it.name.uppercase() == printerName.uppercase() }?.toModel() } ?: return@get call.respond(
+            HttpStatusCode.NotFound)
+
+        runBlocking {
+            printer.with {
+                profile {
+                    medias()
+                }
+            }
+        }
+
+        call.respond(printer)
+    }
+
     get("/printers/profiles") {
         val profiles = transaction { PrinterProfile.all().map { it.toModel() } }
+        runBlocking {
+            profiles.forEach {
+                it.with {
+                    printer()
+                    medias()
+                }
+            }
+        }
         call.respond(profiles)
     }
 }
