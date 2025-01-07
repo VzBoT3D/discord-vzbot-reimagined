@@ -8,6 +8,7 @@ import com.zellerfeld.zellerbotapi.discord.components.commands.actionsenders.Act
 import com.zellerfeld.zellerbotapi.discord.components.commands.annotations.DCommand
 import com.zellerfeld.zellerbotapi.discord.components.commands.annotations.DCommandOption
 import com.zellerfeld.zellerbotapi.discord.components.commands.annotations.DSubCommand
+import com.zellerfeld.zellerbotapi.discord.components.custom.ConfirmModal
 import kotlinx.coroutines.*
 import net.dv8tion.jda.api.entities.Message.Attachment
 import net.dv8tion.jda.api.interactions.components.ActionRow
@@ -143,7 +144,7 @@ class SerialCommand: DiscordCommand() {
 
         @Restricted(TeamMemberRestriction::class, "mustBeInTeam")
         override fun execute(actionSender: ActionSender) {
-            val modal = DiscordModal("Confirm deletion", mutableListOf()) { sender, _, _ ->
+            val modal = ConfirmModal("Confirm deletion", mutableListOf()) { sender, _, _ ->
                 transaction {
                     SerialNumbers.deleteAll()
                 }
