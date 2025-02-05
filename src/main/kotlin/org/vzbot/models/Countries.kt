@@ -3,7 +3,9 @@ package org.vzbot.models
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
+import org.vzbot.plugins.geoClient
 import kotlin.random.Random
 
 /**
@@ -265,6 +267,24 @@ enum class Country(val code: String, val countryName: String) {
             }
         }
         return null
+    }
+
+    fun randomCoordinates(): Pair<Double, Double>? {
+        return runBlocking {
+            val geometry = getLocation(geoClient) ?: run {
+                return@runBlocking null
+            }
+
+            var coordinates: Pair<Double, Double>? = null
+
+            for (geometries in geometry) {
+                coordinates = randomPointInPolygon(geometry.random())
+
+                if (coordinates != null) break
+            }
+
+            return@runBlocking coordinates
+        }
     }
 
     private fun pointInPolygon(lat: Double, lon: Double, polygon: List<Geometry>): Boolean {

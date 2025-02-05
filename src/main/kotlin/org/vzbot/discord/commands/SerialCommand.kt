@@ -19,6 +19,7 @@ import org.simpleyaml.configuration.file.YamlConfiguration
 import org.vzbot.discord.components.PrinterSelection
 import org.vzbot.discord.restrictions.AdminRestriction
 import org.vzbot.discord.restrictions.TeamMemberRestriction
+import org.vzbot.discord.util.fetchFilesForSerial
 import org.vzbot.io.buildPrettyEmbed
 import org.vzbot.io.respondSuccess
 import org.vzbot.models.*
@@ -46,6 +47,21 @@ class SerialCommand: DiscordCommand() {
 
             actionSender.textChannel.sendEmbed(buildPrettyEmbed("VzBoT Serial Program", "Click the button below to apply for a serial id!", Color.RED), ActionRow.of(PrinterSelection()))
             actionSender.respondText("The panel has been created", true)
+        }
+    }
+
+    @DSubCommand("returns the files for the given serial number")
+    class SerialFiles: DiscordSubCommand() {
+
+        @DCommandOption("serial id")
+        var serialID: Int = -1
+
+        @Restricted(TeamMemberRestriction::class, "mustBeInTeam")
+        override fun execute(actionSender: ActionSender) {
+            val serialFiles = fetchFilesForSerial(serialID.toLong())
+            actionSender.textChannel.channel.sendFiles(serialFiles.map { FileUpload.fromData(it) }).queue()
+
+            actionSender.respondSuccess("The files have been sent!")
         }
     }
 

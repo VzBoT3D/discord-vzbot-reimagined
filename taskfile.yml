@@ -16,6 +16,11 @@ tasks:
     cmds:
       - docker compose -f docker-compose.dev.yml up -d
 
+  stop-dev:
+    desc: "Start the Docker Compose development environment"
+    cmds:
+      - docker compose -f docker-compose.dev.yml down
+
   dev:
     desc: "Build the project with Gradle and boot the Docker Compose dev environment"
     cmds:
