@@ -94,6 +94,12 @@ class AcceptSerialRequestButton: PermanentDiscordButton("vz_accept_serial", Disc
             channel.sendEmbedWithText(ticketOwner.asMention, embed.build(), ActionRow.of(DeleteTicketButton()))
             channel.channel.manager.setName("closed-serial-${ticketOwner.effectiveName}").queue()
 
+            val ownersRole = ZellerBot.getRole(env[EnvVariables.VZ_OWNERS_ROLE])
+
+            if (ownersRole != null) {
+                ZellerBot.mainGuild!!.addRoleToMember(ticketOwner, ownersRole).queue()
+            }
+
             ZellerBot.mainGuild!!.modifyNickname(ticketOwner, "${ticketOwner.effectiveName} VZ.${serialID}").queue()
 
             val announcementEmbed = prettyEmbed("New Serial! #$serialID", "The user ${ticketOwner.effectiveName} has just finished their $printer. Spread some VZLove!", Color.GREEN)
