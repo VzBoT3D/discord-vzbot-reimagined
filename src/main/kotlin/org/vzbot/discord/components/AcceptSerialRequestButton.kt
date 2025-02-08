@@ -53,8 +53,12 @@ class AcceptSerialRequestButton: PermanentDiscordButton("vz_accept_serial", Disc
         }
 
         val confirmModal = ConfirmModal("Accept this application?") { sender, _, _ ->
+
+            val serialCount = transaction { SerialNumber.count() }
+
             val serialNumber = transaction {
                 SerialNumber.new {
+                    this.serialID = serialCount + 1
                     this.description = ticket.description
                     this.country = ticket.country
                     this.printer = ticket.printer
@@ -82,7 +86,7 @@ class AcceptSerialRequestButton: PermanentDiscordButton("vz_accept_serial", Disc
 
             val channel = actionSender.textChannel
 
-            val serialID = transaction { serialNumber.id.value }
+            val serialID = transaction { serialNumber.serialID }
 
             val embed = prettyEmbed("Application Accepted", "**Congratulations**. Your application has been accepted and you have been granted your new serial id. In the following messages, we will send you the files to print your serial badge. Welcome to the **VZParty!** Feel free to delete your ticket, when you have grabbed your filed.", Color.GREEN)
             embed.addField("Serial ID", serialID.toString(), false)
