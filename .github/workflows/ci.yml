@@ -43,7 +43,7 @@ jobs:
       - name: Determine image tags and deploy environment
         id: tags
         run: |
-          VERSION=${{ github.event.release.tag_name }}
+          VERSION=${{ github.sha }}
           echo "backend_tags=${{ env.BACKEND_IMAGE }}:${VERSION},${{ env.BACKEND_IMAGE }}:latest" >> $GITHUB_OUTPUT
           echo "frontend_tags=${{ env.FRONTEND_IMAGE }}:${VERSION},${{ env.FRONTEND_IMAGE }}:latest" >> $GITHUB_OUTPUT
           echo "deploy_env=production" >> $GITHUB_OUTPUT
