@@ -23,7 +23,7 @@
     "dotenv": "^16.4.7",
     "epic-spinners": "^2.0.0",
     "lucide-vue-next": "^0.454.0",
-    "nuxt": "latest",
+    "nuxt": "^4",
     "nuxt-swiper": "^1.2.2",
     "qss": "^3.0.0",
     "radix-vue": "^1.9.8",

@@ -1,22 +1,15 @@
-FROM node:20-slim AS base
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+FROM oven/bun:1 AS build
 
 WORKDIR /app
-COPY package.json pnpm-lock.yaml tsconfig.json ./
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
 
-FROM base AS prod-deps
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
-
-FROM base AS build
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 COPY . .
-RUN pnpm run build
+RUN bun run build
 
-FROM node:lts-slim as runner
+FROM node:20-slim AS runner
 
-ENV NODE_ENV=PRODUCTION
+ENV NODE_ENV=production
 EXPOSE 3000
 
 WORKDIR /app
