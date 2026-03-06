@@ -83,6 +83,7 @@ jobs:
       - name: Generate .env file
         run: |
           cat <<'DOTENV' > infra/.env
+          VZ_MODE=DEPLOY
           VZ_TOKEN=${{ secrets.VZ_TOKEN }}
           VZ_LOG_CHANNEL=${{ vars.VZ_LOG_CHANNEL }}
           VZ_ADMIN_ROLE=${{ vars.VZ_ADMIN_ROLE }}

@@ -7,7 +7,6 @@ services:
     volumes:
       - ${VZ_SERIAL_BASE_PLATE_HOST_PATH}:/data/serial-base-plates:ro
       - ${VZ_SERIAL_NUMBER_PLATES_HOST_PATH}:/data/serial-number-plates:ro
-      - VZ_MODE:DEPLOY
     networks:
       - app-tier
     depends_on:
