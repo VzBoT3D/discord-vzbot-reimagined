@@ -4,6 +4,9 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    volumes:
+      - ${VZ_SERIAL_BASE_PLATE_HOST_PATH}:/data/serial-base-plates:ro
+      - ${VZ_SERIAL_NUMBER_PLATES_HOST_PATH}:/data/serial-number-plates:ro
     networks:
       - app-tier
     depends_on:

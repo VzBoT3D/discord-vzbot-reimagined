@@ -80,6 +80,31 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Generate .env file
+        run: |
+          cat <<'DOTENV' > infra/.env
+          VZ_TOKEN=${{ secrets.VZ_TOKEN }}
+          VZ_LOG_CHANNEL=${{ vars.VZ_LOG_CHANNEL }}
+          VZ_ADMIN_ROLE=${{ vars.VZ_ADMIN_ROLE }}
+          VZ_TEAM_ROLE=${{ vars.VZ_TEAM_ROLE }}
+          VZ_SERIAL_CATEGORY=${{ vars.VZ_SERIAL_CATEGORY }}
+          VZ_SERIAL_ANNOUNCEMENT_CHANNEL=${{ vars.VZ_SERIAL_ANNOUNCEMENT_CHANNEL }}
+          VZ_SERIAL_BASE_PLATE_LOCATION=/data/serial-base-plates
+          VZ_SERIAL_NUMBER_PLATES_LOCATION=/data/serial-number-plates
+          VZ_SERIAL_BASE_PLATE_HOST_PATH=${{ vars.VZ_SERIAL_BASE_PLATE_HOST_PATH }}
+          VZ_SERIAL_NUMBER_PLATES_HOST_PATH=${{ vars.VZ_SERIAL_NUMBER_PLATES_HOST_PATH }}
+          VZ_WEBSITE_URL=${{ vars.VZ_WEBSITE_URL }}
+          VZ_DB_USER=${{ secrets.VZ_DB_USER }}
+          VZ_DB_ROOT_PASSWORD=${{ secrets.VZ_DB_ROOT_PASSWORD }}
+          VZ_DB_HOST=mariadb
+          VZ_DB_PASSWORD=${{ secrets.VZ_DB_PASSWORD }}
+          VZ_DB_DATABASE=${{ secrets.VZ_DB_DATABASE }}
+          VZ_DB_PORT=3306
+          BACKEND_URL=http://bot:8080
+          BACKEND_TOKEN=${{ secrets.BACKEND_TOKEN }}
+          DOTENV
+          sed -i 's/^          //' infra/.env
+
       - name: Copy infra files to server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -87,7 +112,7 @@ jobs:
           username: devin
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_SSH_PORT }}
-          source: "infra/docker-compose.yml,infra/deploy.sh"
+          source: "infra/docker-compose.yml,infra/deploy.sh,infra/.env"
           target: "~"
 
       - name: Deploy on server
