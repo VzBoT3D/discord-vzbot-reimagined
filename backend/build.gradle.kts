@@ -63,7 +63,7 @@ dependencies {
     implementation("org.mariadb.jdbc:mariadb-java-client:3.3.3")
     implementation("ch.qos.logback:logback-classic:$logback_version")
 
-    implementation("com.ktbot:api:1.2")
+    implementation("com.ktbot:api:1.2.1")
     implementation("net.dv8tion:JDA:5.6.1")
     implementation("io.github.cdimascio:dotenv-kotlin:6.5.0")
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
