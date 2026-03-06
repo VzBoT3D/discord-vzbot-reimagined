@@ -53,10 +53,9 @@ class SerialCommand: DiscordCommand() {
     @DSubCommand("returns the files for the given serial number")
     class SerialFiles: DiscordSubCommand() {
 
-        @DCommandOption("serial id")
+        @DCommandOption("id")
         var serialID: Int = -1
 
-        @Restricted(TeamMemberRestriction::class, "mustBeInTeam")
         override fun execute(actionSender: ActionSender) {
             val serialFiles = fetchFilesForSerial(serialID.toLong())
             actionSender.textChannel.channel.sendFiles(serialFiles.map { FileUpload.fromData(it) }).queue()
