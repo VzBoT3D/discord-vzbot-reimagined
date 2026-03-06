@@ -1,11 +1,18 @@
 version: '3'
 
 tasks:
-  docker-image:
-    desc: Builds the docker image and tags it
+  build-backend:
+    desc: Build the backend fat JAR
+    dir: backend
     cmds:
-      - gradle clean build
-      - docker buildx build --platform linux/amd64,linux/arm64 -t devinfritz/vzbot-discordbot:latest --push .
+      - ./gradlew clean build
+
+  docker-image:
+    desc: Builds the backend docker image and pushes it
+    cmds:
+      - task: build-backend
+      - docker buildx build --platform linux/amd64,linux/arm64 -t ghcr.io/vzbot3d/vzbot-discordbot:latest --push backend/
+
   start-prod:
     desc: "Start the Docker Compose production environment"
     cmds:
@@ -17,15 +24,15 @@ tasks:
       - docker compose -f docker-compose.dev.yml up -d
 
   stop-dev:
-    desc: "Start the Docker Compose development environment"
+    desc: "Stop the Docker Compose development environment"
     cmds:
       - docker compose -f docker-compose.dev.yml down
 
   dev:
-    desc: "Build the project with Gradle and boot the Docker Compose dev environment"
+    desc: "Build the backend and start the dev database"
     cmds:
-      - echo "Building the project using Gradle..."
-      - ./gradlew build
+      - echo "Building the backend using Gradle..."
+      - task: build-backend
       - echo "Starting Docker Compose with development configuration..."
       - docker compose -f docker-compose.dev.yml up -d
 

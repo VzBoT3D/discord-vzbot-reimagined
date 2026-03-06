@@ -1,10 +1,23 @@
+.DS_Store
+
+### Gradle ###
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
 .kotlin
+
+### Backend ###
 cache
+data/
+
+### Frontend ###
+node_modules/
+.nuxt/
+.output/
+dist/
+
 ### STS ###
 .apt_generated
 .classpath
@@ -25,6 +38,8 @@ bin/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+
+### Environment ###
 .env
 
 ### NetBeans ###

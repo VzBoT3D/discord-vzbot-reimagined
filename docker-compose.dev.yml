@@ -1,7 +1,7 @@
 services:
   mariadb:
+    image: mariadb:11.5
     restart: unless-stopped
-    image: bitnami/mariadb:10.10
     networks:
       - app-tier
     environment:
@@ -11,11 +11,16 @@ services:
       MARIADB_DATABASE: ${VZ_DB_DATABASE}
     ports:
       - "${VZ_DB_PORT}:3306"
+    volumes:
+      - mariadb-data:/var/lib/mysql
     healthcheck:
-      test: [ 'CMD', '/opt/bitnami/scripts/mariadb/healthcheck.sh' ]
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 5s
       timeout: 5s
       retries: 15
 
 networks:
   app-tier:
+
+volumes:
+  mariadb-data:
