@@ -13,7 +13,7 @@ services:
       mariadb:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/status"]
+      test: ["CMD", "curl", "-f", "-H", "token: ${BACKEND_TOKEN}", "http://localhost:8080/status"]
       interval: 15s
       timeout: 5s
       retries: 5
@@ -36,6 +36,8 @@ services:
   mariadb:
     image: mariadb:11.5
     restart: unless-stopped
+    ports:
+      - "${VZ_DB_PORT:-3306}:3306"
     networks:
       - app-tier
     environment:
