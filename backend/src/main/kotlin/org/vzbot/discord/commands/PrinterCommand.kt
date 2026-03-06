@@ -8,15 +8,16 @@ import com.ktbot.api.discord.components.commands.actionsenders.ActionSender
 import com.ktbot.api.discord.components.commands.annotations.DCommand
 import com.ktbot.api.discord.components.commands.annotations.DCommandOption
 import com.ktbot.api.discord.components.commands.annotations.DSubCommand
-import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.interactions.components.ActionRow
 import net.dv8tion.jda.api.interactions.components.text.TextInput
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.vzbot.discord.restrictions.TeamMemberRestriction
 import org.vzbot.io.*
-import org.vzbot.models.*
+import org.vzbot.models.Printer
+import org.vzbot.models.PrinterMedia
+import org.vzbot.models.PrinterProfile
+import org.vzbot.models.Printers
 import org.vzbot.models.generated.toModel
 import java.awt.Color
 

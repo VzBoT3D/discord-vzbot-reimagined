@@ -1,5 +1,6 @@
 package org.vzbot.discord.components
 
+import com.ktbot.api.annotations.DCSelection
 import com.ktbot.api.discord.components.PermanentSimpleSelectionMenu
 import com.ktbot.api.discord.components.SimpleSelectionMenu
 import com.ktbot.api.discord.components.commands.actionsenders.ActionSender
@@ -13,6 +14,7 @@ import org.vzbot.models.Printer
 import org.vzbot.models.Printers
 import java.awt.Color
 
+@DCSelection
 class PrinterSelection: PermanentSimpleSelectionMenu("vz_selection_printers", SimpleSelectionMenu("Please select your printer", options = transaction { Printer.all().map { SelectOption.of(it.name, it.name) }.toMutableList() }, maxOptions = 1, minOptions = 1 )) {
 
     override fun execute(selections: List<String>, sender: ActionSender, hook: Message) {

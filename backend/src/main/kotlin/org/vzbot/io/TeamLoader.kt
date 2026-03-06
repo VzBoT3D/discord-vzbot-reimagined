@@ -2,7 +2,6 @@ package org.vzbot.io
 
 import com.ktbot.api.KtBot
 import com.ktbot.api.util.scheduling.runRepeating
-import io.ktor.http.*
 import org.vzbot.models.author
 import org.vzbot.models.generated.BlogAuthorModelDTO
 import org.vzbot.models.generated.toModel

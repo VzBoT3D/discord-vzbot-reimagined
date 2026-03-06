@@ -43,16 +43,10 @@ jobs:
       - name: Determine image tags and deploy environment
         id: tags
         run: |
-          if [[ "${GITHUB_EVENT_NAME}" == "release" ]]; then
-            VERSION=${{ github.event.release.tag_name }}
-            echo "backend_tags=${{ env.BACKEND_IMAGE }}:${VERSION},${{ env.BACKEND_IMAGE }}:latest" >> $GITHUB_OUTPUT
-            echo "frontend_tags=${{ env.FRONTEND_IMAGE }}:${VERSION},${{ env.FRONTEND_IMAGE }}:latest" >> $GITHUB_OUTPUT
-            echo "deploy_env=production" >> $GITHUB_OUTPUT
-          else
-            echo "backend_tags=${{ env.BACKEND_IMAGE }}:stage-${GITHUB_SHA::7},${{ env.BACKEND_IMAGE }}:stage-latest" >> $GITHUB_OUTPUT
-            echo "frontend_tags=${{ env.FRONTEND_IMAGE }}:stage-${GITHUB_SHA::7},${{ env.FRONTEND_IMAGE }}:stage-latest" >> $GITHUB_OUTPUT
-            echo "deploy_env=stage" >> $GITHUB_OUTPUT
-          fi
+          VERSION=${{ github.event.release.tag_name }}
+          echo "backend_tags=${{ env.BACKEND_IMAGE }}:${VERSION},${{ env.BACKEND_IMAGE }}:latest" >> $GITHUB_OUTPUT
+          echo "frontend_tags=${{ env.FRONTEND_IMAGE }}:${VERSION},${{ env.FRONTEND_IMAGE }}:latest" >> $GITHUB_OUTPUT
+          echo "deploy_env=production" >> $GITHUB_OUTPUT
 
   build-backend:
     needs: detect-changes
@@ -128,4 +122,4 @@ jobs:
           port: ${{ secrets.SERVER_SSH_PORT }}
           script: |
             chmod +x ~/infra/deploy.sh
-            ~/infra/deploy.sh ${{ needs.detect-changes.outputs.deploy_env }}
+            ~/infra/deploy.sh production

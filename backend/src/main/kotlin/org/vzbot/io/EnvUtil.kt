@@ -1,9 +1,9 @@
 package org.vzbot.io
 
+import com.ktbot.api.util.EnvType
 import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv
 import io.github.oshai.kotlinlogging.KotlinLogging
-import com.ktbot.api.util.EnvType
 
 val mode: ProgramMode = ProgramMode.valueOf(System.getenv("VZ_MODE"))
 

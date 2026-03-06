@@ -1,6 +1,5 @@
 package org.vzbot.discord.util
 
-import net.dv8tion.jda.api.utils.FileUpload
 import org.vzbot.io.BotLogger
 import org.vzbot.io.EnvVariables
 import org.vzbot.io.env

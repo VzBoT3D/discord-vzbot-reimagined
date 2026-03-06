@@ -8,7 +8,6 @@ import com.ktbot.api.discord.components.commands.actionsenders.ActionSender
 import com.ktbot.api.discord.components.commands.annotations.DCommand
 import com.ktbot.api.discord.components.commands.annotations.DCommandOption
 import com.ktbot.api.discord.components.commands.annotations.DSubCommand
-import com.ktbot.api.util.TempFile
 import kotlinx.coroutines.runBlocking
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.interactions.components.ActionRow

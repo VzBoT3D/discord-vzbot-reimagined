@@ -2,11 +2,8 @@ package org.vzbot.middleware
 
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import io.ktor.util.*
-import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.vzbot.models.APIToken
 import org.vzbot.models.APITokens

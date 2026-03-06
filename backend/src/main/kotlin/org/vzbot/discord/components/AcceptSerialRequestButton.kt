@@ -20,10 +20,12 @@ import org.vzbot.discord.commands.fetchSerialTicket
 import org.vzbot.discord.restrictions.TeamMemberRestriction
 import org.vzbot.discord.restrictions.TicketRestrictions
 import org.vzbot.discord.util.fetchFilesForSerial
-import org.vzbot.io.*
+import org.vzbot.io.EnvVariables
+import org.vzbot.io.buildPrettyEmbed
+import org.vzbot.io.env
+import org.vzbot.io.prettyEmbed
 import org.vzbot.models.SerialNumber
 import java.awt.Color
-import java.io.File
 
 @DCButton
 class AcceptSerialRequestButton: PermanentDiscordButton("vz_accept_serial", DiscordButton(label = "Accept", buttonStyle = ButtonStyle.SUCCESS, emoji = Emoji.fromUnicode("U+1F44D"))) {

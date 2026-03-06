@@ -1,7 +1,6 @@
 package org.vzbot.discord.commands
 
 import com.ktbot.api.annotations.Restricted
-import com.ktbot.api.discord.components.DiscordModal
 import com.ktbot.api.discord.components.commands.DiscordCommand
 import com.ktbot.api.discord.components.commands.DiscordSubCommand
 import com.ktbot.api.discord.components.commands.actionsenders.ActionSender
@@ -9,7 +8,7 @@ import com.ktbot.api.discord.components.commands.annotations.DCommand
 import com.ktbot.api.discord.components.commands.annotations.DCommandOption
 import com.ktbot.api.discord.components.commands.annotations.DSubCommand
 import com.ktbot.api.discord.components.custom.ConfirmModal
-import kotlinx.coroutines.*
+import kotlinx.coroutines.runBlocking
 import net.dv8tion.jda.api.entities.Message.Attachment
 import net.dv8tion.jda.api.interactions.components.ActionRow
 import net.dv8tion.jda.api.utils.FileUpload
@@ -23,7 +22,6 @@ import org.vzbot.discord.util.fetchFilesForSerial
 import org.vzbot.io.buildPrettyEmbed
 import org.vzbot.io.respondSuccess
 import org.vzbot.models.*
-import org.vzbot.models.generated.toModel
 import org.vzbot.plugins.geoClient
 import java.awt.Color
 import java.nio.file.Files

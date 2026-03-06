@@ -12,8 +12,6 @@ import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.vzbot.discord.commands.fetchSerialTicket
 import org.vzbot.discord.restrictions.TicketRestrictions
-import org.vzbot.io.buildPrettyEmbed
-import java.awt.Color
 import java.util.concurrent.TimeUnit
 
 @DCButton
