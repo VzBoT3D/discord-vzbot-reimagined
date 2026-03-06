@@ -26,6 +26,7 @@ val geoClient = HttpClient(CIO) {
     install(ContentNegotiation) {
         json(Json { ignoreUnknownKeys = true })
     }
+
 }
 
 

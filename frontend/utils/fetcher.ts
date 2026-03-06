@@ -1,5 +1,6 @@
 export async function fetcher<T>(url: string, options?: RequestInit): Promise<T> {
     const config = useRuntimeConfig()
+
     const defaultOptions: RequestInit = {
         headers: {
             'Content-Type': 'application/json',
