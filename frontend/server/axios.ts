@@ -2,8 +2,6 @@ import axios from 'axios';
 
 const config = useRuntimeConfig()
 
-console.log(`[axios] Backend URL: ${config.BACKEND_URL}`)
-
 const axiosInstance = axios.create({
     baseURL: config.BACKEND_URL,
     headers: {

@@ -16,7 +16,6 @@ import java.awt.Color
 
 @DCSelection
 class PrinterSelection: PermanentSimpleSelectionMenu("vz_selection_printers", SimpleSelectionMenu("Please select your printer", options = transaction { Printer.all().map { SelectOption.of(it.name, it.name) }.toMutableList() }, maxOptions = 1, minOptions = 1 )) {
-
     override fun execute(selections: List<String>, sender: ActionSender, hook: Message) {
         val selectedPrinter = selections.first()
         val fetchedPrinter = transaction { Printer.find { Printers.name eq selectedPrinter }.firstOrNull() }
