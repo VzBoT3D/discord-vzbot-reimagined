@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 import animate from "tailwindcss-animate";
 import { setupInspiraUI } from "@inspira-ui/plugins";
+import typography from "@tailwindcss/typography";
 
 export default {
   safelist: ["dark"],
@@ -56,5 +57,5 @@ export default {
     },
   },
 
-  plugins: [animate, setupInspiraUI, require('@tailwindcss/typography')],
+  plugins: [animate, setupInspiraUI, typography],
 } satisfies Config;
