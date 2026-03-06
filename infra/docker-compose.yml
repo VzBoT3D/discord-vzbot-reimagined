@@ -12,6 +12,12 @@ services:
     depends_on:
       mariadb:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/status"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   frontend:
     image: ghcr.io/vzbot3d/vzbot-nuxt:${FRONTEND_TAG:-latest}
@@ -24,7 +30,8 @@ services:
     networks:
       - app-tier
     depends_on:
-      - bot
+      bot:
+        condition: service_healthy
 
   mariadb:
     image: mariadb:11.5
