@@ -37,7 +37,7 @@ services:
     image: mariadb:11.5
     restart: unless-stopped
     ports:
-      - "${VZ_DB_PORT:-3306}:3306"
+      - "3306:3306"
     networks:
       - app-tier
     environment:
