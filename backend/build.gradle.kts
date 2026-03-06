@@ -9,7 +9,7 @@ plugins {
     id("com.google.devtools.ksp") version "2.0.21-1.0.25"
 }
 
-val exposedVersion = "0.56.0"
+val exposedVersion = "0.60.0"
 
 group = "org.vzbot"
 version = "1.0.0"
