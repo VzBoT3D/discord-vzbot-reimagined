@@ -88,6 +88,7 @@ jobs:
           VZ_LOG_CHANNEL=${{ vars.VZ_LOG_CHANNEL }}
           VZ_ADMIN_ROLE=${{ vars.VZ_ADMIN_ROLE }}
           VZ_TEAM_ROLE=${{ vars.VZ_TEAM_ROLE }}
+          VZ_MODERATOR_ROLE=${{ vars.VZ_MODERATOR_ROLE }}
           VZ_SERIAL_CATEGORY=${{ vars.VZ_SERIAL_CATEGORY }}
           VZ_SERIAL_ANNOUNCEMENT_CHANNEL=${{ vars.VZ_SERIAL_ANNOUNCEMENT_CHANNEL }}
           VZ_SERIAL_BASE_PLATE_LOCATION=/data/serial-base-plates
