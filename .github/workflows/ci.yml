@@ -1,0 +1,102 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+  release:
+    types:
+      - published
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  BACKEND_IMAGE: ghcr.io/vzbot3d/vzbot-discordbot
+  FRONTEND_IMAGE: ghcr.io/vzbot3d/vzbot-nuxt
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ github.event_name == 'release' || steps.filter.outputs.backend }}
+      frontend: ${{ github.event_name == 'release' || steps.filter.outputs.frontend }}
+      backend_tags: ${{ steps.tags.outputs.backend_tags }}
+      frontend_tags: ${{ steps.tags.outputs.frontend_tags }}
+      deploy_env: ${{ steps.tags.outputs.deploy_env }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Detect changed paths
+        uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+
+      - name: Determine image tags and deploy environment
+        id: tags
+        run: |
+          if [[ "${GITHUB_EVENT_NAME}" == "release" ]]; then
+            VERSION=${{ github.event.release.tag_name }}
+            echo "backend_tags=${{ env.BACKEND_IMAGE }}:${VERSION},${{ env.BACKEND_IMAGE }}:latest" >> $GITHUB_OUTPUT
+            echo "frontend_tags=${{ env.FRONTEND_IMAGE }}:${VERSION},${{ env.FRONTEND_IMAGE }}:latest" >> $GITHUB_OUTPUT
+            echo "deploy_env=production" >> $GITHUB_OUTPUT
+          else
+            echo "backend_tags=${{ env.BACKEND_IMAGE }}:stage-${GITHUB_SHA::7},${{ env.BACKEND_IMAGE }}:stage-latest" >> $GITHUB_OUTPUT
+            echo "frontend_tags=${{ env.FRONTEND_IMAGE }}:stage-${GITHUB_SHA::7},${{ env.FRONTEND_IMAGE }}:stage-latest" >> $GITHUB_OUTPUT
+            echo "deploy_env=stage" >> $GITHUB_OUTPUT
+          fi
+
+  build-backend:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.backend == 'true'
+    uses: ./.github/workflows/build-backend.yml
+    with:
+      image_tags: ${{ needs.detect-changes.outputs.backend_tags }}
+      deploy_env: ${{ needs.detect-changes.outputs.deploy_env }}
+    secrets: inherit
+
+  build-frontend:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.frontend == 'true'
+    uses: ./.github/workflows/build-frontend.yml
+    with:
+      image_tags: ${{ needs.detect-changes.outputs.frontend_tags }}
+    secrets: inherit
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [detect-changes, build-backend, build-frontend]
+    if: always() && !failure() && !cancelled()
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Copy infra files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: github
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.SERVER_SSH_PORT }}
+          source: "infra/docker-compose.yml,infra/deploy.sh"
+          target: "~"
+
+      - name: Deploy on server
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: github
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.SERVER_SSH_PORT }}
+          script: |
+            chmod +x ~/infra/deploy.sh
+            ~/infra/deploy.sh ${{ needs.detect-changes.outputs.deploy_env }}

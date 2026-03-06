@@ -1,0 +1,48 @@
+services:
+  bot:
+    image: ghcr.io/vzbot3d/vzbot-discordbot:${BACKEND_TAG:-latest}
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - app-tier
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+  frontend:
+    image: ghcr.io/vzbot3d/vzbot-nuxt:${FRONTEND_TAG:-latest}
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      BACKEND_URL: ${BACKEND_URL:-http://bot:8080}
+      BACKEND_TOKEN: ${BACKEND_TOKEN}
+    networks:
+      - app-tier
+    depends_on:
+      - bot
+
+  mariadb:
+    image: mariadb:11.5
+    restart: unless-stopped
+    networks:
+      - app-tier
+    environment:
+      MARIADB_USER: ${VZ_DB_USER}
+      MARIADB_ROOT_PASSWORD: ${VZ_DB_ROOT_PASSWORD}
+      MARIADB_PASSWORD: ${VZ_DB_PASSWORD}
+      MARIADB_DATABASE: ${VZ_DB_DATABASE}
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+
+networks:
+  app-tier:
+
+volumes:
+  mariadb-data:

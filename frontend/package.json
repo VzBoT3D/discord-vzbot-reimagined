@@ -1,0 +1,50 @@
+{
+  "name": "vzbot-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/fonts": "^0.10.2",
+    "@nuxt/image": "1.8.1",
+    "@nuxtjs/color-mode": "^3.5.2",
+    "@nuxtjs/tailwindcss": "^6.12.2",
+    "@unovis/ts": "^1.5.0",
+    "@unovis/vue": "^1.5.0",
+    "@vueuse/core": "^11.3.0",
+    "@vueuse/motion": "^2.2.6",
+    "axios": "^1.7.9",
+    "cobe": "^0.6.3",
+    "dotenv": "^16.4.7",
+    "epic-spinners": "^2.0.0",
+    "lucide-vue-next": "^0.454.0",
+    "nuxt": "latest",
+    "nuxt-swiper": "^1.2.2",
+    "qss": "^3.0.0",
+    "radix-vue": "^1.9.8",
+    "shadcn-nuxt": "latest",
+    "vaul-vue": "^0.2.0",
+    "vue": "latest",
+    "vue-markdown-render": "^2.2.1",
+    "vue-router": "latest",
+    "vue-use-spring": "^0.3.3"
+  },
+  "devDependencies": {
+    "@iconify-json/radix-icons": "^1.2.1",
+    "@iconify/vue": "^4.1.2",
+    "@inspira-ui/plugins": "^0.0.1",
+    "@tailwindcss/typography": "^0.5.15",
+    "@types/markdown-it": "^14.1.2",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.5.4",
+    "tailwindcss": "^3.4.14",
+    "tailwindcss-animate": "^1.0.7",
+    "typescript": "^5.6.3"
+  }
+}
