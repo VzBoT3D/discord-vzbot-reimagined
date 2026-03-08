@@ -25,6 +25,7 @@ import org.vzbot.io.buildPrettyEmbed
 import org.vzbot.io.env
 import org.vzbot.io.prettyEmbed
 import org.vzbot.models.SerialNumber
+import org.vzbot.models.SerialNumbers
 import java.awt.Color
 
 @DCButton
@@ -56,17 +57,15 @@ class AcceptSerialRequestButton: PermanentDiscordButton("vz_accept_serial", Disc
 
         val confirmModal = ConfirmModal("Accept this application?") { sender, _, _ ->
 
-            val serialCount = transaction { SerialNumber.count() }
-
             val serialNumber = transaction {
                 SerialNumber.new {
-                    this.serialID = serialCount + 1
+                    this.serialID = 0
                     this.description = ticket.description
                     this.country = ticket.country
                     this.printer = ticket.printer
                     this.mediaURL = ticket.mediaURL
                     this.memberID = ticket.ownerID
-                }
+                }.also { it.serialID = it.id.value.toLong() }
             }
 
             GlobalScope.async {
